@@ -84,9 +84,11 @@ for alpha, complement_alpha in quantile_pairs:
         # Define the total daily volume constraint
         prob += lpSum([buy[t] for t in range(48)]) + lpSum([sell[t] for t in range(48)]) == Total_Daily_Volume, "Total_Daily_Volume"
 
-        # Ensure that each hour has at most one buy or sell action
-        for t in range(47):
-            prob += buy_action[t] + sell_action[t] + buy_action[t+1] + sell_action[t+1] <= 1, f"One_Action_Per_Hour_{t}"
+#         # Ensure that each hour has at most one buy or sell action
+        for t in range(1,48):
+            prob += buy_action[t] + sell_action[t] <= 1, f"One_Action_Per_Hour_{t}"
+            prob += buy_action[t] + sell_action[t] + buy_action[t-1] + sell_action[t-1] <= 2, f"one_Action_Per_Hour_{t}"
+            
 
         # Link action variables to buy and sell variables
         for t in range(48):
@@ -111,7 +113,6 @@ for alpha, complement_alpha in quantile_pairs:
         for t_buy in range(48):
             for t_sell in range(t_buy + 1, min(t_buy + 17, 48)):
                 prob += sell_action[t_sell] <= buy_action[t_buy], f"Max_Time_Diff_{t_buy}_{t_sell}"
-
 
         # Define the objective function (maximize profit)
         prob += lpSum([(battery_efficiency_discharge * p_max[t] * sell[t]) - ((p_min[t] / battery_efficiency_charge) * buy[t]) for t in range(48)])
@@ -168,7 +169,7 @@ for alpha, complement_alpha in quantile_pairs:
 # Print the total profits for all quantile pairs
 for pair, profit in total_profits.items():
     print(f"Total Profit for Alpha {pair[0]}-{pair[1]}: {profit}")
-    
+
     
     
     
