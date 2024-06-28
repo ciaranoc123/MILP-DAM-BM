@@ -66,5 +66,13 @@ The purpose of this project is to analyze and compare different forecasting mode
 ## Code
 
 ### MILP Library
+Single-Market library contains the code for my DAM and BM single trade strategies, as well as my DAM BM volume constrained stragegies.
+
+Dual Market library contains the code for my Dual market DAM & BM trading approach
+
+
+
+
+
 
 
